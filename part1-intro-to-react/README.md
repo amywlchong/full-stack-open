@@ -1,6 +1,6 @@
 # Part 1 - Introduction to React
 
-Each directory houses my solutions to the corresponding exercises from the course.
+These directories house my solutions to the exercises from the course.
 
 ## [course-info](https://github.com/amywlchong/full-stack-open/tree/master/part1-intro-to-react/course-info)
 
