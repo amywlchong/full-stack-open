@@ -13,12 +13,16 @@ const create = (personObj) => {
     .then(response => response.data)
 }
 
-const remove = (url) => {
+const remove = (id) => {
+  const url = `${baseUrl}/${id}`
+
   return axios
     .delete(url)
 }
 
-const replace = (url, personObj) => {
+const replace = (personID, personObj) => {
+  const url = `${baseUrl}/${personID}`
+
   return axios
     .put(url, personObj)
     .then(response => response.data)

@@ -37,6 +37,13 @@ const App = () => {
     setNewNumber('')
   }
 
+  const setAndClearNotification = (message, type) => {
+    setNotification({message, type});
+    setTimeout(() => {
+      setNotification({message: null, type: null})
+    }, 5000);
+  }
+
   const addPerson = (event) => {
     event.preventDefault();
 
@@ -49,10 +56,8 @@ const App = () => {
         return
       }
 
-      const url = `http://localhost:3001/persons/${personInPhonebook.id}`
-
       personService
-        .replace(url, personObj)
+        .replace(personInPhonebook.id, personObj)
         .then(updatedPerson => {
           const updatedPersonsArray = persons.map(person => person.name.toLowerCase() === newName.toLowerCase()
             ? updatedPerson
@@ -60,29 +65,15 @@ const App = () => {
           setPersons(updatedPersonsArray)
           resetInput()
 
-          setNotification(
-            {
-              message: `Replaced ${newName}'s number with the new number`,
-              type: 'success'
-            }
-          )
-          setTimeout(() => {
-            setNotification({message: null, type: null})
-          }, 5000)
+          setAndClearNotification(`Replaced ${newName}'s number with the new number`, 'success')
         })
         .catch(error => {
-          setPersons(persons.filter(person => person.name.toLowerCase() !== newName.toLowerCase()))
-          resetInput()
+          if (error.response && error.response.status === 404) {
+            setPersons(persons.filter(person => person.name.toLowerCase() !== newName.toLowerCase()))
+            resetInput()
 
-          setNotification(
-            {
-              message: `${newName}'s number has already been deleted from server`,
-              type: 'error'
-            }
-          )
-          setTimeout(() => {
-            setNotification({message: null, type: null})
-          }, 5000)
+            setAndClearNotification(`${newName}'s number has already been deleted from server`, 'error')
+          }
         })
     }
     else {
@@ -92,15 +83,7 @@ const App = () => {
           setPersons(persons.concat(newPerson))
           resetInput()
 
-          setNotification(
-            {
-              message: `Added ${newName}'s number to the phonebook`,
-              type: 'success'
-            }
-          )
-          setTimeout(() => {
-            setNotification({message: null, type: null})
-          }, 5000)
+          setAndClearNotification(`Added ${newName}'s number to the phonebook`, 'success')
         })
     }
 
@@ -109,22 +92,12 @@ const App = () => {
   const deletePersonOf = (id, name) => {
     return () => {
       if (window.confirm(`Delete ${name}?`)) {
-        const url = `http://localhost:3001/persons/${id}`
-
         personService
-          .remove(url)
+          .remove(id)
           .then(() => {
             setPersons(persons.filter(person => person.id !== id))
 
-            setNotification(
-              {
-                message: `Deleted ${name}'s number from the phonebook`,
-                type: 'success'
-              }
-            )
-            setTimeout(() => {
-              setNotification({message: null, type: null})
-            }, 5000)
+            setAndClearNotification(`Deleted ${name}'s number from the phonebook`, 'success')
           })
       }
     }
