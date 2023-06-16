@@ -17,7 +17,7 @@ You may also see any lint errors in the console.
 ### `npm run server`
 
 Starts the json-server.\
-Open [http://localhost:3001/persons](http://localhost:3001/persons) to view the state of the server in your browser.
+Open [http://localhost:3001/api/persons](http://localhost:3001/api/persons) to view the state of the server in your browser.
 
 ### `npm test`
 
