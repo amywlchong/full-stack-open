@@ -7,19 +7,19 @@ const Notification = ({ notification }) => {
     borderRadius: 5,
     padding: 10,
     marginBottom: 10
-  };
+  }
 
   const successStyle = {
     ...baseStyle,
     background: 'palegreen',
     borderColor: 'lightgreen'
-  };
+  }
 
   const errorStyle = {
     ...baseStyle,
     background: 'lightsalmon',
     borderColor: 'lightcoral'
-  };
+  }
 
   if (notification.message === null) {
     return null

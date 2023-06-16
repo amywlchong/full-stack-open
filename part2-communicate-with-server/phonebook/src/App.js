@@ -38,14 +38,14 @@ const App = () => {
   }
 
   const setAndClearNotification = (message, type) => {
-    setNotification({message, type});
+    setNotification({message, type})
     setTimeout(() => {
       setNotification({message: null, type: null})
-    }, 5000);
+    }, 5000)
   }
 
   const addPerson = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const personObj = { name: newName, number: newNumber}
     const personInPhonebook = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
@@ -68,11 +68,14 @@ const App = () => {
           setAndClearNotification(`Replaced ${newName}'s number with the new number`, 'success')
         })
         .catch(error => {
-          if (error.response && error.response.status === 404) {
+          if (error.response && error.response.status === 410) {
             setPersons(persons.filter(person => person.name.toLowerCase() !== newName.toLowerCase()))
             resetInput()
 
             setAndClearNotification(`${newName}'s number has already been deleted from server`, 'error')
+          }
+          else if (error.response && error.response.status === 400) {
+            setAndClearNotification(error.response.data.error, 'error')
           }
         })
     }
@@ -84,6 +87,11 @@ const App = () => {
           resetInput()
 
           setAndClearNotification(`Added ${newName}'s number to the phonebook`, 'success')
+        })
+        .catch(error => {
+          if (error.response && error.response.status === 400) {
+            setAndClearNotification(error.response.data.error, 'error')
+          }
         })
     }
 
@@ -117,4 +125,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App
