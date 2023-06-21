@@ -5,7 +5,6 @@ blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
     .populate('creator', { username: 1, name: 1 })
-    .populate('updatedBy', { username: 1, name: 1 })
 
   response.json(blogs)
 })
@@ -91,8 +90,6 @@ blogsRouter.put('/:id', async (request, response) => {
   const updatedBlog = await blog.save()
   await updatedBlog
     .populate('creator', { username: 1, name: 1 })
-  await updatedBlog
-    .populate('updatedBy', { username: 1, name: 1 })
 
   response.json(updatedBlog)
 })
