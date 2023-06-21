@@ -4,7 +4,7 @@ This directory houses my solutions to the exercises from the course.
 
 ## [blog-list-backend](https://github.com/amywlchong/full-stack-open/tree/master/part4-testing-servers-and-user-administration/blog-list-backend)
 
-This directory hosts a backend for a comprehensive blog list application, developed using Node.js, Express, and MongoDB. The app permits users to add, view, update, and delete blogs they come across online, with adding, updating, and deleting limited to authenticated and authorized users. Each blog entry includes information such as author, title, URL, and the number of upvotes by users. Error handling is applied for the various operations.
+This directory hosts a backend for a comprehensive blog list application, developed using Node.js, Express, and MongoDB. The app permits users to add, view, update, and delete blogs they come across online, with adding, updating, and deleting limited to authenticated and authorized users. Each blog entry includes information such as author, title, URL, and the number of upvotes by users. Error handling is applied for the various operations.  
 **Skills demonstrated:**
 - Setup and configuration of a Node.js and Express.js application
 - Usage of various middleware in Express.js to manage sensitive environment variable data, enable Cross-Origin Resource Sharing, parse incoming request bodies, etc.
