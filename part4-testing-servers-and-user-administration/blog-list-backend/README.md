@@ -17,7 +17,7 @@ The port number (3001) could be different if you've set the PORT environment var
 ### `npm test`
 
 Runs test cases using Jest in a 'test' environment.\
-The results of each test case will be displayed.\
+The results of each test case will be displayed.
 
 ### `npm run lint`
 
