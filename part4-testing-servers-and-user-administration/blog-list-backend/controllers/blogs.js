@@ -22,7 +22,6 @@ blogsRouter.get('/:id', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-
   const user = request.user
 
   if (!user) {
@@ -34,10 +33,12 @@ blogsRouter.post('/', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    user: user.id
+    user: user._id
   })
 
   const savedBlog = await blog.save()
+  await savedBlog.populate('user', { username: 1, name: 1 })
+
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
@@ -78,16 +79,13 @@ blogsRouter.put('/:id', async (request, response) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  if (blog.user.toString() !== request.user.id) {
-    return response.status(403).json({ error: 'only the creator can update this blog' })
-  }
-
   blog.title = title
   blog.author = author
   blog.url = url
   blog.likes = likes
 
   const updatedBlog = await blog.save()
+  await updatedBlog.populate('user', { username: 1, name: 1 })
 
   response.json(updatedBlog)
 })

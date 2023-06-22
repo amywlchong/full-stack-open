@@ -93,7 +93,7 @@ describe('POST /api/blogs', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.user).toEqual(initialUser._id.toString())
+    expect(response.body.user.id).toEqual(initialUser._id.toString())
 
     const blogsAfterPost = await helper.blogsInDb()
 
@@ -243,13 +243,16 @@ describe('DELETE /api/blogs/:id', () => {
 })
 
 describe('PUT /api/blogs/:id', () => {
-  test('succeeds with a valid id and a token belonging to the creator', async () => {
+  test('succeeds with a valid id and a valid token', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogtoUpdate = blogsAtStart[0]
 
+    const anotherUser = await helper.savedUser('myusername')
+    const tokenOfAnotherUser = helper.tokenOfSavedUser(anotherUser)
+
     await api
       .put(`/api/blogs/${blogtoUpdate.id}`)
-      .set(headers) // headers with token belonging to the creator from beforeEach
+      .set('Authorization', `Bearer ${tokenOfAnotherUser}`)
       .send(helper.newValidBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -257,23 +260,6 @@ describe('PUT /api/blogs/:id', () => {
     const blogsAfterUpdate = await helper.blogsInDb()
     expect(blogsAfterUpdate).toHaveLength(blogsAtStart.length)
     expect(blogsAfterUpdate).toContainEqual(expect.objectContaining(helper.newValidBlog))
-  })
-
-  test('fails with status code 403 if the token does not belong to the creator', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToUpdate = blogsAtStart[0]
-
-    const anotherUser = await helper.savedUser('myusername')
-    const tokenOfAnotherUser = helper.tokenOfSavedUser(anotherUser)
-
-    await api
-      .put(`/api/blogs/${blogToUpdate.id}`)
-      .set('Authorization', `Bearer ${tokenOfAnotherUser}`)
-      .send(helper.newValidBlog)
-      .expect(403)
-
-    const blogsAfterUpdate = await helper.blogsInDb()
-    expect(blogsAtStart).toEqual(blogsAfterUpdate)
   })
 
   test('fails with status code 401 if blog is being updated without a token', async () => {
