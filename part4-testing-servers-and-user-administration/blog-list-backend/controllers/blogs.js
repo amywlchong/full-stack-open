@@ -4,7 +4,8 @@ const Blog = require('../models/blog')
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
-    .populate('user', { username: 1, name: 1 })
+    .populate('creator', { username: 1, name: 1 })
+    .populate('updatedBy', { username: 1, name: 1 })
 
   response.json(blogs)
 })
@@ -33,11 +34,13 @@ blogsRouter.post('/', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    user: user._id
+    creator: user.id,
+    updatedBy: []
   })
 
   const savedBlog = await blog.save()
-  await savedBlog.populate('user', { username: 1, name: 1 })
+  await savedBlog
+    .populate('creator', { username: 1, name: 1 })
 
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
@@ -58,7 +61,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  if (blog.user.toString() !== request.user.id) {
+  if (blog.creator.toString() !== request.user.id) {
     return response.status(403).json({ error: 'only the creator can delete this blog' })
   }
 
@@ -83,9 +86,13 @@ blogsRouter.put('/:id', async (request, response) => {
   blog.author = author
   blog.url = url
   blog.likes = likes
+  blog.updatedBy = blog.updatedBy.concat(request.user._id)
 
   const updatedBlog = await blog.save()
-  await updatedBlog.populate('user', { username: 1, name: 1 })
+  await updatedBlog
+    .populate('creator', { username: 1, name: 1 })
+  await updatedBlog
+    .populate('updatedBy', { username: 1, name: 1 })
 
   response.json(updatedBlog)
 })

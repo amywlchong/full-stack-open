@@ -11,10 +11,16 @@ const blogSchema = new mongoose.Schema({
     required: true
   },
   likes: Number,
-  user: {
+  creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  updatedBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
 })
 
 blogSchema.set('toJSON', {
