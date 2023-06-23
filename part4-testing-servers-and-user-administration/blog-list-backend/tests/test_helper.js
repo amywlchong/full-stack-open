@@ -52,7 +52,7 @@ const nonExistingId = async () => {
 }
 
 const blogsInDb = async () => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  const blogs = await Blog.find({}).populate('creator', { username: 1, name: 1 })
   return blogs.map(blog => {
     return {
       title: blog.title,
@@ -60,7 +60,8 @@ const blogsInDb = async () => {
       url: blog.url,
       likes: blog.likes,
       id: blog._id.toString(),
-      user: blog.user._id.toString()
+      creator: blog.creator._id.toString(),
+      updatedBy: blog.updatedBy
     }
   })
 }

@@ -11,6 +11,10 @@ mongoose.set('bufferTimeoutMS', 30000)
 
 let initialUser
 let headers
+let usersAtStart
+let blogsAtStart
+let blogToUpdate
+let updatedBlog
 
 beforeEach(async () => {
   await User.deleteMany({})
@@ -21,8 +25,12 @@ beforeEach(async () => {
   headers = {
     'Authorization': `Bearer ${token}`,
   }
+  usersAtStart = await helper.usersInDb()
 
-  await Blog.insertMany(helper.initialBlogs.map((blog) => ({ ...blog, user: initialUser._id, })))
+  await Blog.insertMany(helper.initialBlogs.map((blog) => ({ ...blog, creator: initialUser._id, })))
+  blogsAtStart = await helper.blogsInDb()
+  blogToUpdate = blogsAtStart[0]
+  updatedBlog = {...blogToUpdate, likes : blogToUpdate.likes + 1}
 })
 
 describe('GET /api/blogs', () => {
@@ -36,7 +44,7 @@ describe('GET /api/blogs', () => {
   test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
 
-    expect(response.body).toHaveLength(helper.initialBlogs.length)
+    expect(response.body).toHaveLength(blogsAtStart.length)
   })
 
   test('blogs have the id property and not the _id property', async () => {
@@ -49,14 +57,18 @@ describe('GET /api/blogs', () => {
   test('a specific blog is within the returned blogs', async () => {
     const response = await api.get('/api/blogs')
 
-    expect(response.body).toContainEqual(expect.objectContaining(helper.initialBlogs[0]))
+    expect(response.body).toContainEqual(expect.objectContaining({
+      title: blogsAtStart[0].title,
+      author: blogsAtStart[0].author,
+      url: blogsAtStart[0].url,
+      likes: blogsAtStart[0].likes,
+      id: blogsAtStart[0].id
+    }))
   })
 })
 
 describe('GET /api/blogs/:id', () => {
   test('succeeds with a valid id', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
     const blogToView = blogsAtStart[0]
 
     const resultBlog = await api
@@ -93,17 +105,15 @@ describe('POST /api/blogs', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.user.id).toEqual(initialUser._id.toString())
+    expect(response.body.creator.id).toEqual(initialUser._id.toString())
 
     const blogsAfterPost = await helper.blogsInDb()
 
-    expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
+    expect(blogsAfterPost).toHaveLength(blogsAtStart.length + 1)
     expect(blogsAfterPost).toContainEqual(expect.objectContaining(helper.newValidBlog))
   }, 100000)
 
   test('fails with status code 401 if blog is being added without a token', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
     await api
       .post('/api/blogs')
       .send(helper.newValidBlog)
@@ -115,8 +125,6 @@ describe('POST /api/blogs', () => {
 
   test('fails with status code 400 if blog is being added with a malformed token', async () => {
     headers.Authorization = 'Bearer invalidtoken'
-
-    const blogsAtStart = await helper.blogsInDb()
 
     const result = await api
       .post('/api/blogs')
@@ -143,8 +151,6 @@ describe('POST /api/blogs', () => {
   })
 
   test('fails with status code 400 if the title or url property is missing', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
     await api
       .post('/api/blogs')
       .set(headers)
@@ -167,7 +173,6 @@ describe('POST /api/blogs', () => {
 
 describe('DELETE /api/blogs/:id', () => {
   test('succeeds with status code 204 if id is valid and the token belongs to the creator', async () => {
-    const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
@@ -177,12 +182,11 @@ describe('DELETE /api/blogs/:id', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
     expect(blogsAtEnd).not.toContainEqual(expect.objectContaining(blogToDelete))
   })
 
   test('fails with status code 403 if the token does not belong to the creator', async () => {
-    const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     const anotherUser = await helper.savedUser('myusername')
@@ -198,7 +202,6 @@ describe('DELETE /api/blogs/:id', () => {
   })
 
   test('fails with status code 401 if blog is being deleted without a token', async () => {
-    const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
@@ -210,7 +213,6 @@ describe('DELETE /api/blogs/:id', () => {
   })
 
   test('fails with status code 400 if blog is being deleted with a malformed token', async () => {
-    const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     headers.Authorization = 'Bearer invalidtoken'
@@ -228,8 +230,6 @@ describe('DELETE /api/blogs/:id', () => {
   })
 
   test('fails with status code 400 if id is invalid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
@@ -244,31 +244,27 @@ describe('DELETE /api/blogs/:id', () => {
 
 describe('PUT /api/blogs/:id', () => {
   test('succeeds with a valid id and a valid token', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogtoUpdate = blogsAtStart[0]
-
     const anotherUser = await helper.savedUser('myusername')
     const tokenOfAnotherUser = helper.tokenOfSavedUser(anotherUser)
 
     await api
-      .put(`/api/blogs/${blogtoUpdate.id}`)
+      .put(`/api/blogs/${blogToUpdate.id}`)
       .set('Authorization', `Bearer ${tokenOfAnotherUser}`)
-      .send(helper.newValidBlog)
+      .send(updatedBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
+    updatedBlog.updatedBy = updatedBlog.updatedBy.concat(anotherUser._id)
+
     const blogsAfterUpdate = await helper.blogsInDb()
     expect(blogsAfterUpdate).toHaveLength(blogsAtStart.length)
-    expect(blogsAfterUpdate).toContainEqual(expect.objectContaining(helper.newValidBlog))
+    expect(blogsAfterUpdate).toContainEqual(updatedBlog)
   })
 
   test('fails with status code 401 if blog is being updated without a token', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToUpdate = blogsAtStart[0]
-
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
-      .send(helper.newValidBlog)
+      .send(updatedBlog)
       .expect(401)
 
     const blogsAfterUpdate = await helper.blogsInDb()
@@ -276,15 +272,12 @@ describe('PUT /api/blogs/:id', () => {
   })
 
   test('fails with status code 400 if blog is being updated with a malformed token', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToUpdate = blogsAtStart[0]
-
     headers.Authorization = 'Bearer invalidtoken'
 
     const result = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .set(headers)
-      .send(helper.newValidBlog)
+      .send(updatedBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -295,14 +288,12 @@ describe('PUT /api/blogs/:id', () => {
   })
 
   test('fails with status code 404 if blog does not exist', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
     const validNonExistingId = await helper.nonExistingId()
 
     await api
       .put(`/api/blogs/${validNonExistingId}`)
       .set(headers)
-      .send(helper.newValidBlog)
+      .send(updatedBlog)
       .expect(404)
 
     const blogsAfterUpdate = await helper.blogsInDb()
@@ -310,14 +301,12 @@ describe('PUT /api/blogs/:id', () => {
   })
 
   test('fails with status code 400 if id is invalid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
     const invalidId = '5a3d5da59070081a82a3445'
 
     await api
       .put(`/api/blogs/${invalidId}`)
       .set(headers)
-      .send(helper.newValidBlog)
+      .send(updatedBlog)
       .expect(400)
 
     const blogsAfterUpdate = await helper.blogsInDb()
@@ -325,24 +314,22 @@ describe('PUT /api/blogs/:id', () => {
   })
 
   test('fails with status code 400 if the title or url property is missing', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-
-    const initialBlogs = await helper.blogsInDb()
-    const blogtoUpdate = initialBlogs[0]
+    const blogWithMissingTitle = {...blogToUpdate, title: undefined, likes : blogToUpdate.likes + 1}
+    const blogWithMissingUrl = {...blogToUpdate, url: undefined, likes : blogToUpdate.likes + 1}
 
     await api
-      .put(`/api/blogs/${blogtoUpdate.id}`)
+      .put(`/api/blogs/${blogToUpdate.id}`)
       .set(headers)
-      .send(helper.blogWithMissingTitle)
+      .send(blogWithMissingTitle)
       .expect(400)
 
     let blogsAfterUpdate = await helper.blogsInDb()
     expect(blogsAtStart).toEqual(blogsAfterUpdate)
 
     await api
-      .put(`/api/blogs/${blogtoUpdate.id}`)
+      .put(`/api/blogs/${blogToUpdate.id}`)
       .set(headers)
-      .send(helper.blogWithMissingUrl)
+      .send(blogWithMissingUrl)
       .expect(400)
 
     blogsAfterUpdate = await helper.blogsInDb()
@@ -352,8 +339,6 @@ describe('PUT /api/blogs/:id', () => {
 
 describe('POST /api/users', () => {
   test('a valid user can be added', async () => {
-    const usersAtStart = await helper.usersInDb()
-
     await api
       .post('/api/users')
       .send(helper.newValidUser)
@@ -372,8 +357,6 @@ describe('POST /api/users', () => {
   })
 
   test('fails with status code 400 and appropriate error message if the username is missing', async () => {
-    const usersAtStart = await helper.usersInDb()
-
     const result = await api
       .post('/api/users')
       .send(helper.userWithoutUsername)
@@ -387,8 +370,6 @@ describe('POST /api/users', () => {
   })
 
   test('fails with status code 400 and appropriate error message if the username is too short', async () => {
-    const usersAtStart = await helper.usersInDb()
-
     const result = await api
       .post('/api/users')
       .send(helper.userWithShortUsername)
@@ -402,8 +383,6 @@ describe('POST /api/users', () => {
   })
 
   test('fails with status code 400 and apropriate error message if username is not unique', async () => {
-    const usersAtStart = await helper.usersInDb()
-
     const result = await api
       .post('/api/users')
       .send(helper.userWithDuplicateUsername)
@@ -417,8 +396,6 @@ describe('POST /api/users', () => {
   })
 
   test('fails with status code 400 and appropriate error message if the password is missing', async () => {
-    const usersAtStart = await helper.usersInDb()
-
     const result = await api
       .post('/api/users')
       .send(helper.userWithoutPassword)
@@ -432,8 +409,6 @@ describe('POST /api/users', () => {
   })
 
   test('fails with status code 400 and appropriate error message if the password is too short', async () => {
-    const usersAtStart = await helper.usersInDb()
-
     const result = await api
       .post('/api/users')
       .send(helper.userWithShortPassword)
