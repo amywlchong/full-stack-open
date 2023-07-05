@@ -1,18 +1,21 @@
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, you can run the following scripts.\
+For `npm start`, `npm run dev`, and `npm run start:test`, open [http://localhost:3003/api/blogs](http://localhost:3003/api/blogs) to view the state of the server in your browser.\
+The port number (3003) could be different if you've set the PORT environment variable to something else.
 
 ### `npm start`
 
-Starts the Node.js server using the 'index.js' entry point.\
-Open [http://localhost:3001](http://localhost:3001) to view it in your browser.\
-The port number (3001) could be different if you've set the PORT environment variable to something else.
+Starts the Node.js server in production mode using the 'index.js' entry point.
 
 ### `npm run dev`
 
-Starts the server in the development mode using Nodemon. Nodemon will automatically restart the server whenever file changes are detected, making it easier to develop and test changes.\
-Open [http://localhost:3001](http://localhost:3001) to view it in your browser.\
-The port number (3001) could be different if you've set the PORT environment variable to something else.
+Starts the server in the development mode using Nodemon.\
+Nodemon will automatically restart the server whenever file changes are detected, making it easier to develop and test changes.
+
+### `npm run start:test`
+
+Starts the Node.js server in the 'test' environment using the 'index.js' entry point.
 
 ### `npm test`
 

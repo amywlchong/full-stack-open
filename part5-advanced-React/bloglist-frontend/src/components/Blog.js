@@ -12,7 +12,7 @@ const Blog = ({ blog, replaceBlog, deleteBlog, user }) => {
 
   const [detailsVisible, setDetailsVisible] = useState(false)
   const isLikedByUser = user
-    ? blog.updatedBy.some(likedByUser => likedByUser.username === user.username)
+    ? blog.updatedBy.some(idOfLikedByUser => idOfLikedByUser === user.id)
     : true
 
   const toggleDetailsVisibility = () => setDetailsVisible(!detailsVisible)
@@ -44,7 +44,7 @@ const Blog = ({ blog, replaceBlog, deleteBlog, user }) => {
             <p>{blog.likes} {blog.likes === 1 ? 'like' : 'likes'} <button onClick={incrementLikes} disabled={isLikedByUser}>like</button></p>
             <p>added by {blog.creator.name}</p>
             {user &&
-                blog.creator.username === user.username
+                blog.creator.id === user.id
               ? <button onClick={handleDeleteClick}>delete</button>
               : ''
             }

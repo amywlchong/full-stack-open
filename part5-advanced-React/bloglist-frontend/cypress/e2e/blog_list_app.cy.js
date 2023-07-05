@@ -71,6 +71,7 @@ describe('Blog app', function() {
 
     it('Users who are not the blog creator cannot see the delete button', function() {
       cy.addBlog('blog title', 'blog author', 'www.blog-url.com')
+      cy.wait(1000)
       cy.logout()
 
       cy.login('seconduser', 'password')

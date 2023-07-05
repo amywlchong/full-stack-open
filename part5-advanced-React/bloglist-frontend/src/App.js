@@ -41,7 +41,6 @@ const App = () => {
   const createBlog = async (blogObject) => {
     const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
-    blogFormRef.current.toggleVisibility()
     return returnedBlog
   }
 
@@ -89,7 +88,8 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm
               createBlog={createBlog}
-              setAndClearNotification={setAndClearNotification} />
+              setAndClearNotification={setAndClearNotification}
+              blogFormRef={blogFormRef} />
           </Togglable>
         </div>
       }

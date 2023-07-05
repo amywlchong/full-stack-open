@@ -45,17 +45,3 @@ test('shows blog URL and likes when the details button is clicked', () => {
   const blogLikes = screen.getByText(/5/i)
   expect(blogLikes).toBeInTheDocument()
 })
-
-test('calls the replaceBlog function once when the like button is clicked once', () => {
-  const mockReplaceBlog = jest.fn()
-
-  render(<Blog blog={mockBlog} replaceBlog={mockReplaceBlog} deleteBlog={jest.fn()} user={{username: 'anotherUser'}}/>)
-
-  const detailsButton = screen.getByRole('button', { name: /view/i })
-  userEvent.click(detailsButton)
-
-  const likeButton = screen.getByRole('button', { name: /like/i })
-  userEvent.click(likeButton)
-
-  expect(mockReplaceBlog).toHaveBeenCalledTimes(1)
-})

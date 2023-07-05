@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 
 const BlogForm = ({
   createBlog,
-  setAndClearNotification
+  setAndClearNotification,
+  blogFormRef
 }) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
@@ -39,6 +40,7 @@ const BlogForm = ({
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      blogFormRef.current.toggleVisibility()
     } catch (error) {
       setAndClearNotification(error.response.data.error, 'error')
     }
@@ -63,7 +65,12 @@ const BlogForm = ({
 
 BlogForm.propTypes = {
   createBlog: PropTypes.func.isRequired,
-  setAndClearNotification: PropTypes.func.isRequired
+  setAndClearNotification: PropTypes.func.isRequired,
+  blogFormRef: PropTypes.shape({
+    current: PropTypes.shape({
+      toggleVisibility: PropTypes.func,
+    }),
+  }).isRequired,
 }
 
 export default BlogForm

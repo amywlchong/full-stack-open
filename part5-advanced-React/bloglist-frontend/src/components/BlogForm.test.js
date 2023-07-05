@@ -11,7 +11,13 @@ test('form calls the createBlog function with the right details when a new blog 
 
   const mockSetAndClearNotification = jest.fn()
 
-  render(<BlogForm createBlog={mockCreateBlog} setAndClearNotification={mockSetAndClearNotification} />)
+  const mockBlogFormRef = {
+    current: {
+      toggleVisibility: jest.fn()
+    }
+  }
+
+  render(<BlogForm createBlog={mockCreateBlog} setAndClearNotification={mockSetAndClearNotification} blogFormRef={mockBlogFormRef}/>)
 
   const inputTitle = screen.getByRole('textbox', { name: /title/i })
   userEvent.type(inputTitle, 'Test Title')
