@@ -42,6 +42,6 @@ Opens the Cypress Test Runner. It allows you to run end-to-end tests on the app 
 
 ## Services and Tools Needed
 
-Node.js and npm: You'll need Node.js and npm (Node Package Manager) installed on your machine for the development, building, and testing of this application. Node.js provides the runtime environment for development tools, while npm is used to manage and install these tools and libraries.
+Npm: You'll need npm (Node Package Manager) installed on your machine for the development, building, and testing of this application. Npm is used to manage and install development tools and libraries.
 
 Backend Server and Database: The app uses Axios to make HTTP requests to a backend server. Make sure you have the backend server from [part7-updated-blog-list-backend](https://github.com/amywlchong/full-stack-open/tree/master/part7-React-router-custom-hooks-and-styling/updated-blog-list-backend) running. The server should be running on http://localhost:3003, as specified by the proxy setting in the package.json file. The backend server, in turn, interacts with a MongoDB database. Ensure the backend server and database are correctly set up and running to fully interact with the frontend.
