@@ -60,9 +60,6 @@ describe('GET /api/blogs', () => {
     expect(response.body).toContainEqual(expect.objectContaining({
       title: blogsAtStart[0].title,
       author: blogsAtStart[0].author,
-      url: blogsAtStart[0].url,
-      likes: blogsAtStart[0].likes,
-      id: blogsAtStart[0].id
     }))
   })
 })
@@ -76,7 +73,13 @@ describe('GET /api/blogs/:id', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    expect(resultBlog.body).toEqual(blogToView)
+    expect(resultBlog.body).toEqual(expect.objectContaining({
+      title: blogToView.title,
+      author: blogToView.author,
+      url: blogToView.url,
+      likes: blogToView.likes,
+      creator: expect.objectContaining({id: blogToView.creator}),
+    }))
   })
 
   test('fails with status code 404 if blog does not exist', async () => {

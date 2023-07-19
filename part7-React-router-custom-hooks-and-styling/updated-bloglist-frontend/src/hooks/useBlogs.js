@@ -1,12 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import blogService from '../services/blogs'
 
-const useBlogs = () => {
+const useBlogs = (id) => {
   const queryClient = useQueryClient()
 
-  const { data: blogs = [], isLoading, isError } = useQuery('blogs', blogService.getAll, {
+  const { data: blogs = [], isLoading: isLoadingBlogs, isError: isBlogsError } = useQuery('blogs', blogService.getAll, {
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 10,  // 10 minutes
+    enabled: !id,
+    refetchOnMount: true
+  })
+
+  const { data: oneBlog, isLoading: isLoadingOneBlog, isError: isOneBlogError } = useQuery(['blog', id], () => blogService.getOne(id), {
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60,  // 1 minute
+    enabled: !!id,
+    refetchOnMount: true
   })
 
   const createBlogMutation = useMutation(blogService.create, {
@@ -20,6 +28,8 @@ const useBlogs = () => {
 
   const updateBlogMutation = useMutation(blogService.replace, {
     onSuccess: (updatedBlog) => {
+      queryClient.setQueryData(['blog', updatedBlog.id], updatedBlog)
+
       const blogs = queryClient.getQueryData('blogs')
       queryClient.setQueryData('blogs', blogs.map(blog => blog.id === updatedBlog.id
         ? updatedBlog
@@ -39,30 +49,52 @@ const useBlogs = () => {
     }
   })
 
+  const createCommentMutation = useMutation(blogService.createComment, {
+    onSuccess: (newComment, variables) => {
+
+      const { blogId } = variables
+
+      const blog = queryClient.getQueryData(['blog', blogId])
+
+      blog.comments = blog.comments.concat(newComment)
+      queryClient.setQueryData(['blog', blogId], blog)
+
+    }
+  })
+
   const createBlog = async (blogObject) => {
     const returnedBlog = await createBlogMutation.mutateAsync(blogObject)
     return returnedBlog
   }
 
-  const updateBlog = (blogObject, incrementLikes = false) => {
+  const updateBlog = async (blogObject, incrementLikes = false) => {
     if (incrementLikes) {
       blogObject.likes += 1
     }
 
-    updateBlogMutation.mutate(blogObject)
+    await updateBlogMutation.mutateAsync(blogObject)
   }
 
   const deleteBlog = async (id) => {
     await deleteBlogMutation.mutateAsync(id)
   }
 
+  const createComment = async (blogId, commentObject) => {
+    const returnedComment = await createCommentMutation.mutateAsync({blogId, commentObject})
+    return returnedComment
+  }
+
   return {
     blogs,
-    isLoading,
-    isError,
+    isLoadingBlogs,
+    isBlogsError,
+    oneBlog,
+    isLoadingOneBlog,
+    isOneBlogError,
     createBlog,
     updateBlog,
-    deleteBlog
+    deleteBlog,
+    createComment
   }
 }
 

@@ -24,7 +24,7 @@ const App = () => {
   const matchRootPath = useMatch('/')
   const matchBlogsIdPath = useMatch('/blogs/:id')
 
-  const { blogs, isLoading: isLoadingBlogs, isError: isBlogsError, createBlog, updateBlog, deleteBlog } = useBlogs()
+  const { blogs, isLoadingBlogs, isBlogsError, createBlog } = useBlogs()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -81,7 +81,7 @@ const App = () => {
         </div>
         }
         <Routes>
-          <Route path="/blogs/:id" element={<Blog blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog} />} />
+          <Route path="/blogs/:id" element={<Blog />} />
           <Route path="/users/:id" element={<User />} />
           <Route path="/users" element={<UserList />} />
           <Route path="/" element={<BlogList blogs={blogs} />} />

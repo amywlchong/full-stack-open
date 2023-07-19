@@ -26,6 +26,7 @@ BlogList.propTypes = {
     id: PropTypes.string.isRequired,
     author: PropTypes.string,
     title: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired
   })).isRequired,
 }
 
