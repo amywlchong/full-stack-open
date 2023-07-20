@@ -1,5 +1,8 @@
 const blogsRouter = require('express').Router()
+const validator = require('validator')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const { userExtractor, checkBlogExists } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -9,27 +12,20 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.get('/:id', async (request, response) => {
-  const id = request.params.id
+blogsRouter.get('/:id', checkBlogExists, async (request, response) => {
+  const blog = request.blog
+  await blog.populate('creator', { username: 1, name: 1 })
+  await blog.populate('comments.commenter', { username: 1, name: 1})
 
-  const blog = await Blog
-    .findById(id)
-    .populate('creator', { username: 1, name: 1 })
-    .populate('comments.commenter', { username: 1, name: 1})
-
-  if (blog) {
-    response.json(blog)
-  } else {
-    response.status(404).end()
-  }
+  response.json(blog)
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user
 
-  if (!user) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+  if (body.url && !validator.isURL(body.url)) {
+    return response.status(400).json({ error: 'Invalid URL' })
   }
 
   const blog = new Blog({
@@ -51,41 +47,28 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-
-  if (!request.user) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
+blogsRouter.delete('/:id', userExtractor, checkBlogExists, async (request, response) => {
   const id = request.params.id
-
-  const blog = await Blog.findById(id)
-
-  if (!blog) {
-    return response.status(404).json({ error: 'blog not found' })
-  }
+  const blog = request.blog
 
   if (blog.creator.toString() !== request.user.id) {
     return response.status(403).json({ error: 'only the creator can delete this blog' })
   }
 
   await Blog.findByIdAndRemove(id)
+
+  const user = await User.findById(request.user.id)
+  user.blogs = user.blogs.filter(blogId => blogId.toString() !== id)
+  await user.save()
+
   response.status(204).end()
 })
 
-blogsRouter.put('/:id', async (request, response) => {
 
-  if (!request.user) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
+blogsRouter.put('/:id', userExtractor, checkBlogExists, async (request, response) => {
 
   const { title, author, url, likes } = request.body
-
-  const blog = await Blog.findById(request.params.id)
-
-  if (!blog) {
-    return response.status(404).json({ error: 'blog not found' })
-  }
+  const blog = request.blog
 
   blog.title = title
   blog.author = author
@@ -100,20 +83,10 @@ blogsRouter.put('/:id', async (request, response) => {
   response.json(updatedBlog)
 })
 
-blogsRouter.post('/:id/comments', async (request, response) => {
-  const id = request.params.id
+blogsRouter.post('/:id/comments', userExtractor, checkBlogExists, async (request, response) => {
   const body = request.body
   const user = request.user
-
-  if (!user) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  const blog = await Blog.findById(id)
-
-  if (!blog) {
-    return response.status(404).json({ error: 'blog not found' })
-  }
+  const blog = request.blog
 
   if (/^\s*$/.test(body.comment)) {
     return response.status(400).json({ error: 'Comment must not be empty' })

@@ -1,6 +1,19 @@
 const { info, errorLogger } = require('./logger')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const Blog = require('../models/blog')
+
+const checkBlogExists = async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+
+  request.blog = blog
+
+  next()
+}
 
 const tokenExtractor = (request, response, next) => {
   const getTokenFrom = request => {
@@ -17,13 +30,12 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = async (request, response, next) => {
-  if (request.token) {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
-    }
-    request.user = await User.findById(decodedToken.id)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (!request.token || !decodedToken?.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
   }
+  request.user = await User.findById(decodedToken.id)
 
   next()
 }
@@ -48,13 +60,14 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   } else if (error.name ===  'JsonWebTokenError') {
-    return response.status(400).json({ error: error.message })
+    return response.status(401).json({ error: 'invalid token' })
   }
 
   next(error)
 }
 
 module.exports = {
+  checkBlogExists,
   tokenExtractor,
   userExtractor,
   requestLogger,

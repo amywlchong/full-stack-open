@@ -126,17 +126,15 @@ describe('POST /api/blogs', () => {
     expect(blogsAtStart).toEqual(blogsAfterPost)
   })
 
-  test('fails with status code 400 if blog is being added with a malformed token', async () => {
+  test('fails with status code 401 if blog is being added with a malformed token', async () => {
     headers.Authorization = 'Bearer invalidtoken'
 
-    const result = await api
+    await api
       .post('/api/blogs')
       .set(headers)
       .send(helper.newValidBlog)
-      .expect(400)
+      .expect(401)
       .expect('Content-Type', /application\/json/)
-
-    expect(result.body.error).toContain('jwt malformed')
 
     const blogsAfterPost = await helper.blogsInDb()
     expect(blogsAtStart).toEqual(blogsAfterPost)
@@ -215,18 +213,16 @@ describe('DELETE /api/blogs/:id', () => {
     expect(blogsAtStart).toEqual(blogsAtEnd)
   })
 
-  test('fails with status code 400 if blog is being deleted with a malformed token', async () => {
+  test('fails with status code 401 if blog is being deleted with a malformed token', async () => {
     const blogToDelete = blogsAtStart[0]
 
     headers.Authorization = 'Bearer invalidtoken'
 
-    const result = await api
+    await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .set(headers)
-      .expect(400)
+      .expect(401)
       .expect('Content-Type', /application\/json/)
-
-    expect(result.body.error).toContain('jwt malformed')
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtStart).toEqual(blogsAtEnd)
@@ -274,17 +270,15 @@ describe('PUT /api/blogs/:id', () => {
     expect(blogsAtStart).toEqual(blogsAfterUpdate)
   })
 
-  test('fails with status code 400 if blog is being updated with a malformed token', async () => {
+  test('fails with status code 401 if blog is being updated with a malformed token', async () => {
     headers.Authorization = 'Bearer invalidtoken'
 
-    const result = await api
+    await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .set(headers)
       .send(updatedBlog)
-      .expect(400)
+      .expect(401)
       .expect('Content-Type', /application\/json/)
-
-    expect(result.body.error).toContain('jwt malformed')
 
     const blogsAfterUpdate = await helper.blogsInDb()
     expect(blogsAtStart).toEqual(blogsAfterUpdate)
