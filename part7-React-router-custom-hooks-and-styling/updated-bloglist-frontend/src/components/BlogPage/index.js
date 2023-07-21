@@ -36,8 +36,8 @@ const Blog = () => {
     ? blog.likedBy.every(idOfLikedUser => idOfLikedUser !== loggedInUser.id)
     : false
 
-  const incrementLikes = () => {
-    updateBlog(blog, true)      // incrementLikes = true
+  const incrementLikes = async () => {
+    await updateBlog(blog, true)      // incrementLikes = true
   }
 
   const handleDeleteClick = async () => {
