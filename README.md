@@ -1,6 +1,6 @@
 # full-stack-open
 
-This repository houses my projects and solutions to the exercises for the Full Stack Open course, a comprehensive program offered by the University of Helsinki. The course focuses on modern JavaScript-based web development, including React, Redux, Node.js, Express, authentication, and MongoDB.
+This repository houses my projects and solutions to the exercises for the Full Stack Open course, a comprehensive program offered by the University of Helsinki. The course focuses on modern JavaScript-based web development, including React, Redux, Axios, Node.js, Express, JSON web token, and MongoDB.
 
 [Course completion certificate](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/84a03b3172c4a49b09846e6c7c0a33a8)
 

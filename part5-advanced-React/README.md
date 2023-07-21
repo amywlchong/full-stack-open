@@ -4,7 +4,7 @@ This directory houses my solutions to the exercises from the course.
 
 ## [blog-list-frontend](https://github.com/amywlchong/full-stack-open/tree/master/part5-advanced-React/bloglist-frontend)
 
-This directory houses the frontend for a React-based blog list application. This application interfaces with a backend, providing a full-stack blog listing solution. It allows users to login, add, view, like, and delete blog entries. Each blog includes details such as author, title, URL, and the number of likes. Features also include persistent login through local storage and conditional rendering of detailed blog information. Extensive end-to-end testing has been performed.
+This directory houses the frontend for a React-based blog list application. This application interfaces with a backend, providing a full-stack blog listing solution. It allows users to login, add blogs they come across online, view the blogs, like them, and delete them. Each blog includes details such as author, title, URL, and the number of likes. Features also include persistent login through local storage and conditional rendering of detailed blog information. Extensive end-to-end testing has been performed.
 
 **Skills demonstrated:**
 - Building a React application with multiple components and state management
