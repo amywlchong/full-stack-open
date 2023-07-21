@@ -63,10 +63,7 @@ describe('Blog app', function() {
 
       cy.contains('blog title by blog author').click()
 
-      cy.get('.blog-details-container').within(() => {
-
-        cy.get('button').contains('delete').should('be.visible').click()
-      })
+      cy.get('button').contains('delete').should('be.visible').click()
 
       cy.get('#blog-list-container').should('not.contain', 'blog title by blog author')
     })

@@ -5,10 +5,10 @@ import {
   BrowserRouter as Router
 } from 'react-router-dom'
 import App from './App'
-import { NotificationContextProvider } from './components/NotificationContext'
-import { UserContextProvider } from './components/UserContext'
+import { NotificationContextProvider } from './contexts/NotificationContext'
+import { UserContextProvider } from './contexts/UserContext'
 import { ThemeProvider } from '@mui/material/styles'
-import { theme } from './components/MUITheme'
+import { theme } from './styles/MUITheme'
 
 const queryClient = new QueryClient()
 

@@ -1,16 +1,26 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import useUsers from '../hooks/useUsers'
-import { UserContext } from './UserContext'
+import useUsers from '../../hooks/useUsers'
+import { UserContext } from '../../contexts/UserContext'
+import Loading from '../FetchStateUI/Loading'
+import Error from '../FetchStateUI/Error'
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 
 const UserList = () => {
 
   const [loggedInUser] = useContext(UserContext)
-  const { users } = useUsers()
+  const { users, isLoadingUsers, isUsersError } = useUsers()
 
   if (!loggedInUser) {
     return <div>Log in to view this page</div>
+  }
+
+  if (isLoadingUsers) {
+    return <Loading />
+  }
+
+  if (isUsersError) {
+    return <Error />
   }
 
   return (

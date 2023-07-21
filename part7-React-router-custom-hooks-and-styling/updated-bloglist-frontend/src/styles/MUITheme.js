@@ -19,7 +19,7 @@ const themeOptions = {
             fontSize: '2rem',
             fontWeight: 'bold',
             color: '#A217C6',
-            padding: '0.8rem 0',
+            margin: '1.2rem 0',
           },
         },
         {
@@ -28,7 +28,7 @@ const themeOptions = {
             fontSize: '1.5rem',
             fontWeight: 'bold',
             color: '#3C6CFF',
-            padding: '0.4rem 0',
+            margin: '1rem 0',
           },
         },
         {
@@ -37,7 +37,7 @@ const themeOptions = {
             fontSize: '1rem',
             fontWeight: 'bold',
             color: '#000000',
-            padding: '0.3rem 0',
+            margin: '0.6rem 0',
           },
         },
         {
@@ -45,18 +45,18 @@ const themeOptions = {
           style: {
             fontSize: '1rem',
             color: '#000000',
-            padding: '0.2rem 0',
-          },
-        },
-        {
-          props: { variant: 'body2' },
-          style: {
-            fontSize: '0.875rem',
-            color: '#000000',
-            padding: '0.2rem 0',
+            margin: '0.5rem 0',
+            wordWrap: 'break-word',
           },
         },
       ],
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          margin: '0.2rem 0',
+        },
+      },
     },
   },
 }

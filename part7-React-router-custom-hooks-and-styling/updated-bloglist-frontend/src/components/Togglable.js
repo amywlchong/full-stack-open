@@ -1,8 +1,8 @@
-import { useState, forwardRef, useImperativeHandle } from 'react'
+import { useState, Children, cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import { Button } from '@mui/material'
 
-const Togglable = forwardRef((props, refs) => {
+const Togglable = ({ buttonLabel, children }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -12,27 +12,26 @@ const Togglable = forwardRef((props, refs) => {
     setVisible(!visible)
   }
 
-  useImperativeHandle(refs, () => {
-    return {
-      toggleVisibility
-    }
+  const childrenWithVisibilityToggle = Children.map(children, child => {
+    return cloneElement(child, { toggleVisibility })
   })
 
   return (
     <div>
       <div style={hideWhenVisible}>
-        <Button variant="contained" onClick={toggleVisibility}>{props.buttonLabel}</Button>
+        <Button variant="contained" onClick={toggleVisibility}>{buttonLabel}</Button>
       </div>
       <div style={showWhenVisible}>
-        {props.children}
+        {childrenWithVisibilityToggle}
         <Button variant="outlined" onClick={toggleVisibility}>cancel</Button>
       </div>
     </div>
   )
-})
+}
 
 Togglable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
 }
 
 Togglable.displayName = 'Togglable'

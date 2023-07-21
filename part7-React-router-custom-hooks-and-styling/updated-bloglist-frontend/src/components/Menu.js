@@ -1,15 +1,42 @@
 import { Link } from 'react-router-dom'
 import { useContext } from 'react'
-import { UserContext } from './UserContext'
-import { NotificationContext } from './NotificationContext'
-import PropTypes from 'prop-types'
+import useAuthentication from '../hooks/useAuthentication'
+import { UserContext } from '../contexts/UserContext'
+import { NotificationContext } from '../contexts/NotificationContext'
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-const Menu = ({ handleLogout }) => {
+const Menu = () => {
+  const { handleLogout } = useAuthentication()
   const [loggedInUser] = useContext(UserContext)
   const [, showNotification] = useContext(NotificationContext)
+
+  const toolbarStyles = {
+    display: 'grid',
+    gridTemplateColumns: {
+      xs: '5% 45% 45% 5%',
+      xl: '10% 40% 40% 10%',
+    }
+  }
+
+  const leftBoxStyles = {
+    gridColumn: '2/3',
+    display: 'flex',
+    justifyContent: 'start'
+  }
+
+  const rightBoxStyles = {
+    gridColumn: '3/4',
+    display: 'flex',
+    justifyContent: 'end',
+    alignItems: 'center'
+  }
+
+  const typographyStyles = { fontSize: 14 }
+
+  const theme = useTheme()
+  const isScreenSmall = useMediaQuery(theme.breakpoints.down('sm'))
 
   const handleLogoutClick = () => {
     try {
@@ -20,31 +47,21 @@ const Menu = ({ handleLogout }) => {
     }
   }
 
-  const theme = useTheme()
-  const isScreenSmall = useMediaQuery(theme.breakpoints.down('sm'))
-
   return (
     <AppBar position="static">
-      <Toolbar sx={{
-        display: 'grid',
-        gridTemplateColumns: {
-          xs: '5% 45% 45% 5%',
-          xl: '10% 40% 40% 10%',
-        }
-      }}>
+      <Toolbar sx={toolbarStyles}>
 
-        <Box sx={{ gridColumn: '2/3', display: 'flex', justifyContent: 'start'}}>
+        <Box sx={leftBoxStyles}>
           <Button color="inherit" component={Link} to="/">Home</Button>
           {loggedInUser !== null && <Button color="inherit" component={Link} to="/users">Users</Button>}
         </Box>
 
         {loggedInUser &&
-          <Box sx={{ gridColumn: '3/4', display: 'flex', justifyContent: 'end', alignItems: 'center'}}>
+          <Box sx={rightBoxStyles}>
             {!isScreenSmall &&
               <Typography
-                component="div"
                 color="inherit"
-                sx={{ fontSize: 14 }}
+                sx={typographyStyles}
               >
               Logged in as {loggedInUser.name}
               </Typography>}
@@ -54,10 +71,6 @@ const Menu = ({ handleLogout }) => {
       </Toolbar>
     </AppBar>
   )
-}
-
-Menu.propTypes = {
-  handleLogout: PropTypes.func.isRequired,
 }
 
 export default Menu

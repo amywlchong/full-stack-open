@@ -2,12 +2,15 @@ import PropTypes from 'prop-types'
 import { Typography, Divider, Box } from '@mui/material'
 
 const Comments = ({ comments }) => {
+  const commentContainerStyles = { margin: '20px 0' }
+  const dividerStyles = { margin: '10px 0', borderColor: 'lightgrey' }
+
   return (
-    <Box sx={{ margin: '20px 0' }}>
+    <Box sx={commentContainerStyles}>
       <Typography variant="h3">Comments</Typography>
       {comments.map((comment) => (
         <div key={comment.id}>
-          <Divider sx={{ margin: '10px 0', borderColor: 'lightgrey' }} />
+          <Divider sx={dividerStyles} />
           <Typography variant="body1">{comment.commenter.name}: {comment.comment}</Typography>
         </div>
       ))}

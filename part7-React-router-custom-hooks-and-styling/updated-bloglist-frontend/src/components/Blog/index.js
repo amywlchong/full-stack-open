@@ -1,30 +1,32 @@
-import { useContext, useRef } from 'react'
+import { useContext } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import useBlogs from '../hooks/useBlogs'
-import { UserContext } from './UserContext'
-import { NotificationContext } from './NotificationContext'
+import useBlogs from '../../hooks/useBlogs'
+import Loading from '../FetchStateUI/Loading'
+import Error from '../FetchStateUI/Error'
+import { UserContext } from '../../contexts/UserContext'
+import { NotificationContext } from '../../contexts/NotificationContext'
+import LikeButton from '../StyledButtons/LikeButton'
+import DeleteButton from '../StyledButtons/DeleteButton'
 import Comments from './Comments'
 import CommentForm from './CommentForm'
-import Togglable from './Togglable'
-import { Typography, Button } from '@mui/material'
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
+import Togglable from '../Togglable'
+import { Typography } from '@mui/material'
 
 const Blog = () => {
 
   const [loggedInUser] = useContext(UserContext)
   const [, showNotification] = useContext(NotificationContext)
   const navigate = useNavigate()
-  const commentFormRef = useRef()
 
   const { id } = useParams()
-  const { oneBlog, isLoadingOneBlog, isOneBlogError, updateBlog, deleteBlog } = useBlogs(id)
+  const { oneBlog, isLoadingOneBlog, isOneBlogError, updateBlog, deleteBlog, createComment } = useBlogs(id)
 
   if (isLoadingOneBlog) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   if (isOneBlogError) {
-    return <div>Error: An error occurred while fetching data from the server</div>
+    return <Error />
   }
 
   // const blog = blogs.find(blog => blog.id === id)
@@ -52,35 +54,25 @@ const Blog = () => {
 
   return (
     <div>
-      <article className="blog-details-container">
+      <section className="blog-details-container">
         <Typography variant="h2">{blog.author ? `${blog.title} by ${blog.author}` : blog.title}</Typography>
 
-        <Typography variant="body1"><a href={blog.url} target='_blank' rel='noreferrer'>{blog.url}</a></Typography>
+        <Typography variant="body1"><a href={blog.url.startsWith('http') ? blog.url : `http://${blog.url}`} target='_blank' rel='noreferrer'>{blog.url}</a></Typography>
         <Typography variant="body1">
           {blog.likes} {blog.likes === 1 ? 'like ' : 'likes '}
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={incrementLikes}
-            disabled={!isUserAllowedToLike}
-            size="small"
-            startIcon={<ThumbUpAltIcon />}
-            sx={{ minWidth: 'initial', width: 'fit-content' }}
-            className="likeButton"
-          >
-          </Button>
+          <LikeButton incrementLikes={incrementLikes} isUserAllowedToLike={isUserAllowedToLike} />
         </Typography>
         <Typography variant="body1">added by {blog.creator.name}</Typography>
-      </article>
+      </section>
 
       {
         loggedInUser &&
         <>
           {blog.creator.id === loggedInUser.id &&
-            <Button variant="outlined" sx={{color: '#808080'}} onClick={handleDeleteClick}>delete</Button>
+            <DeleteButton handleDeleteClick={handleDeleteClick} />
           }
-          <Togglable buttonLabel="new comment" ref={commentFormRef}>
-            <CommentForm blogId={id} commentFormRef={commentFormRef} />
+          <Togglable buttonLabel="new comment">
+            <CommentForm blogId={id} createComment={createComment} />
           </Togglable>
         </>
       }
