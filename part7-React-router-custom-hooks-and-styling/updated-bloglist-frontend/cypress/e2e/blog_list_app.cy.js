@@ -31,14 +31,14 @@ describe('Blog app', function() {
     })
 
     it('A blog can be created', function() {
-      cy.addBlog('blog title', 'blog author', 'www.blog-url.com')
+      cy.addBlog('blog title', 'blog author', 'blog post')
 
       cy.get('#blog-list-container')
         .contains('blog title by blog author')
     })
 
     it('A blog can be liked', function() {
-      cy.addBlog('blog title', 'blog author', 'www.blog-url.com')
+      cy.addBlog('blog title', 'blog author', 'blog post')
       let initialLikes
 
       cy.contains('blog title by blog author').click()
@@ -59,7 +59,7 @@ describe('Blog app', function() {
     })
 
     it('User can delete own blog', function() {
-      cy.addBlog('blog title', 'blog author', 'www.blog-url.com')
+      cy.addBlog('blog title', 'blog author', 'blog post')
 
       cy.contains('blog title by blog author').click()
 
@@ -69,7 +69,7 @@ describe('Blog app', function() {
     })
 
     it('Users who are not the blog creator cannot see the delete button', function() {
-      cy.addBlog('blog title', 'blog author', 'www.blog-url.com')
+      cy.addBlog('blog title', 'blog author', 'blog post')
       cy.logout()
 
       cy.login('seconduser', 'password')
@@ -83,9 +83,9 @@ describe('Blog app', function() {
     })
 
     it('Blogs are ordered by likes', function() {
-      cy.addBlogWithLikes('The title with the second most likes', 'blog author 1', 'www.blog-url1.com', 5)
-      cy.addBlogWithLikes('The title with the third most likes', 'blog author 2', 'www.blog-url2.com', 3)
-      cy.addBlogWithLikes('The title with the most likes', 'blog author 3', 'www.blog-url3.com', 10)
+      cy.addBlogWithLikes('The title with the second most likes', 'blog author 1', 'blog post 1', 5)
+      cy.addBlogWithLikes('The title with the third most likes', 'blog author 2', 'blog post 2', 3)
+      cy.addBlogWithLikes('The title with the most likes', 'blog author 3', 'blog post 3', 10)
       cy.visit('http://localhost:3000')
 
       cy.get('#blog-list-container').within(() => {

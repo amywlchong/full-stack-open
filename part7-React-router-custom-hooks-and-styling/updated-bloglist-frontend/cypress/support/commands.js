@@ -27,19 +27,19 @@ Cypress.Commands.add('logout', () => {
   cy.get('button').contains('log out').click()
 })
 
-Cypress.Commands.add('addBlog', (title, author, url) => {
+Cypress.Commands.add('addBlog', (title, author, blogPost) => {
   cy.get('button').contains('new blog').click()
   cy.get('#title').type(title)
   cy.get('#author').type(author)
-  cy.get('#url').type(url)
+  cy.get('#blog-post').type(blogPost)
   cy.get('button').contains('add').click()
 })
 
-Cypress.Commands.add('addBlogWithLikes', (title, author, url, likes) => {
+Cypress.Commands.add('addBlogWithLikes', (title, author, blogPost, likes) => {
   const blog = {
     title,
     author,
-    url,
+    blogPost,
     likes
   }
   cy.request({

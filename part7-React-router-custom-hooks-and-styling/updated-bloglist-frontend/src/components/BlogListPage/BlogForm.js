@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import useField from '../../hooks/useField'
 import { NotificationContext } from '../../contexts/NotificationContext'
 import { fullWidthStyles } from '../../styles/styles'
-import { Typography, Button, TextField, Box } from '@mui/material'
+import { Typography, Button, TextField, OutlinedInput, Box } from '@mui/material'
 
 const BlogForm = ({ createBlog, toggleVisibility }) => {
   const { value: newTitle, onChange: handleTitleChange, reset: resetTitle } = useField('text')
   const { value: newAuthor, onChange: handleAuthorChange, reset: resetAuthor } = useField('text')
-  const { value: newUrl, onChange: handleUrlChange, reset: resetUrl } = useField('text')
+  const { value: newBlogPost, onChange: handleBlogPostChange, reset: resetBlogPost } = useField('text')
 
   const [, showNotification] = useContext(NotificationContext)
 
@@ -18,7 +18,7 @@ const BlogForm = ({ createBlog, toggleVisibility }) => {
     const blogObject = {
       title: newTitle,
       author: newAuthor,
-      url: newUrl
+      blogPost: newBlogPost
     }
 
     try {
@@ -29,7 +29,7 @@ const BlogForm = ({ createBlog, toggleVisibility }) => {
       )
       resetTitle()
       resetAuthor()
-      resetUrl()
+      resetBlogPost()
       toggleVisibility()
     } catch (error) {
       console.log(error)
@@ -48,7 +48,7 @@ const BlogForm = ({ createBlog, toggleVisibility }) => {
           <TextField label="author" id="author" fullWidth value={newAuthor} onChange={handleAuthorChange} />
         </Box>
         <Box sx={fullWidthStyles}>
-          <TextField label="url" id="url" fullWidth value={newUrl} onChange={handleUrlChange} />
+          <OutlinedInput multiline rows={8} placeholder="blog post" id="blog-post" fullWidth value={newBlogPost} onChange={handleBlogPostChange} />
         </Box>
         <Button variant="contained" type="submit">add</Button>
       </Box>

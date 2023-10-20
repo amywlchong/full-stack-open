@@ -57,12 +57,11 @@ const Blog = () => {
       <section className="blog-details-container">
         <Typography variant="h2">{blog.author ? `${blog.title} by ${blog.author}` : blog.title}</Typography>
 
-        <Typography variant="body1"><a href={blog.url.startsWith('http') ? blog.url : `http://${blog.url}`} target='_blank' rel='noreferrer'>{blog.url}</a></Typography>
+        <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>{blog.blogPost}</Typography>
         <Typography variant="body1">
           {blog.likes} {blog.likes === 1 ? 'like ' : 'likes '}
           <LikeButton incrementLikes={incrementLikes} isUserAllowedToLike={isUserAllowedToLike} />
         </Typography>
-        <Typography variant="body1">added by {blog.creator.name}</Typography>
       </section>
 
       {
