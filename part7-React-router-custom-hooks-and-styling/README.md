@@ -4,7 +4,7 @@ This directory houses my solutions to the exercises from the course.
 
 ## [updated-bloglist-frontend](https://github.com/amywlchong/full-stack-open/tree/master/part7-React-router-custom-hooks-and-styling/updated-bloglist-frontend)
 
-This directory contains an upgraded and refactored version of the blog list application. Users are free to view blogs, and upon authentication, they can add blogs they find online, like them, delete the blogs they added, and post comments. The application has been updated to offer a navigation menu for seamless navigation between various blog and user views, coupled with robust state management. Moreover, it has been styled with Material UI to showcase a responsive and aesthetic UI.
+This directory contains an upgraded and refactored version of the blog list application. Users are free to view blogs, and upon authentication, they can add blogs, like them, delete the blogs they added, and post comments. The application has been updated to offer a navigation menu for seamless navigation between various blog and user views, coupled with robust state management. Moreover, it has been styled with Material UI to showcase a responsive and aesthetic UI.
 
 **Skills demonstrated:**
 - Leveraging useReducer, context, custom hook, and React Query for robust state management
@@ -19,7 +19,7 @@ This directory hosts the enhanced and refactored backend of the blog list applic
 
 **Skills demonstrated:**
 - Setup and configuration of a Node.js and Express.js application
-- Usage of various middleware in Express.js to manage sensitive environment variable data, enable Cross-Origin Resource Sharing, parse incoming request bodies, etc.
+- Usage of various middleware in Express.js to enable Cross-Origin Resource Sharing, handle incoming requests, etc.
 - Implementation and testing of token-based user authentication and authorization
 - Model definition and schema customization in Mongoose
 - CRUD operations on a MongoDB database using Mongoose
