@@ -3,23 +3,31 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const { userExtractor, checkBlogExists } = require('../utils/middleware')
 
-blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({})
-    .select('title author likes')
+blogsRouter.get('/', async (request, response, next) => {
+  try {
+    const blogs = await Blog
+      .find({})
+      .select('title author likes')
 
-  response.json(blogs)
+    response.json(blogs)
+  } catch (error) {
+    next(error)
+  }
 })
 
-blogsRouter.get('/:id', checkBlogExists, async (request, response) => {
+blogsRouter.get('/:id', checkBlogExists, async (request, response, next) => {
   const blog = request.blog
-  await blog.populate('creator', { username: 1, name: 1 })
-  await blog.populate('comments.commenter', { username: 1, name: 1})
+  try {
+    await blog.populate('creator', { username: 1, name: 1 })
+    await blog.populate('comments.commenter', { username: 1, name: 1})
 
-  response.json(blog)
+    response.json(blog)
+  } catch (error) {
+    next(error)
+  }
 })
 
-blogsRouter.post('/', userExtractor, async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response, next) => {
   const body = request.body
   const user = request.user
 
@@ -33,16 +41,20 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     comments: []
   })
 
-  const savedBlog = await blog.save()
-  await savedBlog.populate('creator', { username: 1, name: 1 })
+  try {
+    const savedBlog = await blog.save()
+    await savedBlog.populate('creator', { username: 1, name: 1 })
 
-  user.blogs = user.blogs.concat(savedBlog._id)
-  await user.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
 
-  response.status(201).json(savedBlog)
+    response.status(201).json(savedBlog)
+  } catch (error) {
+    next(error)
+  }
 })
 
-blogsRouter.delete('/:id', userExtractor, checkBlogExists, async (request, response) => {
+blogsRouter.delete('/:id', userExtractor, checkBlogExists, async (request, response, next) => {
   const id = request.params.id
   const blog = request.blog
 
@@ -50,17 +62,21 @@ blogsRouter.delete('/:id', userExtractor, checkBlogExists, async (request, respo
     return response.status(403).json({ error: 'only the creator can delete this blog' })
   }
 
-  await Blog.findByIdAndRemove(id)
+  try {
+    await Blog.findByIdAndRemove(id)
 
-  const user = await User.findById(request.user.id)
-  user.blogs = user.blogs.filter(blogId => blogId.toString() !== id)
-  await user.save()
+    const user = await User.findById(request.user.id)
+    user.blogs = user.blogs.filter(blogId => blogId.toString() !== id)
+    await user.save()
 
-  response.status(204).end()
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
 })
 
 
-blogsRouter.put('/:id', userExtractor, checkBlogExists, async (request, response) => {
+blogsRouter.put('/:id', userExtractor, checkBlogExists, async (request, response, next) => {
 
   const { title, author, blogPost, likes } = request.body
   const blog = request.blog
@@ -71,14 +87,18 @@ blogsRouter.put('/:id', userExtractor, checkBlogExists, async (request, response
   blog.likes = likes
   blog.likedBy = blog.likedBy.concat(request.user.id)
 
-  const updatedBlog = await blog.save()
-  await updatedBlog.populate('creator', { username: 1, name: 1 })
-  await updatedBlog.populate('comments.commenter', { username: 1, name: 1})
+  try {
+    const updatedBlog = await blog.save()
+    await updatedBlog.populate('creator', { username: 1, name: 1 })
+    await updatedBlog.populate('comments.commenter', { username: 1, name: 1})
 
-  response.json(updatedBlog)
+    response.json(updatedBlog)
+  } catch (error) {
+    next(error)
+  }
 })
 
-blogsRouter.post('/:id/comments', userExtractor, checkBlogExists, async (request, response) => {
+blogsRouter.post('/:id/comments', userExtractor, checkBlogExists, async (request, response, next) => {
   const body = request.body
   const user = request.user
   const blog = request.blog
@@ -94,12 +114,16 @@ blogsRouter.post('/:id/comments', userExtractor, checkBlogExists, async (request
 
   blog.comments = blog.comments.concat(newComment)
 
-  const updatedBlog = await blog.save()
-  await updatedBlog.populate('comments.commenter', { username: 1, name: 1})
+  try {
+    const updatedBlog = await blog.save()
+    await updatedBlog.populate('comments.commenter', { username: 1, name: 1})
 
-  const savedComment = updatedBlog.comments[updatedBlog.comments.length - 1]
+    const savedComment = updatedBlog.comments[updatedBlog.comments.length - 1]
 
-  response.status(201).json(savedComment)
+    response.status(201).json(savedComment)
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = blogsRouter
