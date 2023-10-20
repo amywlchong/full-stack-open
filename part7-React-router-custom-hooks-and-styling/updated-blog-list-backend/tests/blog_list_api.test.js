@@ -76,7 +76,7 @@ describe('GET /api/blogs/:id', () => {
     expect(resultBlog.body).toEqual(expect.objectContaining({
       title: blogToView.title,
       author: blogToView.author,
-      url: blogToView.url,
+      blogPost: blogToView.blogPost,
       likes: blogToView.likes,
       creator: expect.objectContaining({id: blogToView.creator}),
     }))
@@ -151,7 +151,7 @@ describe('POST /api/blogs', () => {
     expect(response.body.likes).toBe(0)
   })
 
-  test('fails with status code 400 if the title or url property is missing', async () => {
+  test('fails with status code 400 if the title or blogPost property is missing', async () => {
     await api
       .post('/api/blogs')
       .set(headers)
@@ -164,7 +164,7 @@ describe('POST /api/blogs', () => {
     await api
       .post('/api/blogs')
       .set(headers)
-      .send(helper.blogWithMissingUrl)
+      .send(helper.blogWithMissingBlogPost)
       .expect(400)
 
     blogsAfterPost = await helper.blogsInDb()
@@ -310,9 +310,9 @@ describe('PUT /api/blogs/:id', () => {
     expect(blogsAtStart).toEqual(blogsAfterUpdate)
   })
 
-  test('fails with status code 400 if the title or url property is missing', async () => {
+  test('fails with status code 400 if the title or blogPost property is missing', async () => {
     const blogWithMissingTitle = {...blogToUpdate, title: undefined, likes : blogToUpdate.likes + 1}
-    const blogWithMissingUrl = {...blogToUpdate, url: undefined, likes : blogToUpdate.likes + 1}
+    const blogWithMissingBlogPost = {...blogToUpdate, blogPost: undefined, likes : blogToUpdate.likes + 1}
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
@@ -326,7 +326,7 @@ describe('PUT /api/blogs/:id', () => {
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .set(headers)
-      .send(blogWithMissingUrl)
+      .send(blogWithMissingBlogPost)
       .expect(400)
 
     blogsAfterUpdate = await helper.blogsInDb()

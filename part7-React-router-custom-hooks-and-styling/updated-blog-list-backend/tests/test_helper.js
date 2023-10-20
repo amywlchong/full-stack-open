@@ -3,17 +3,19 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const mockBlogPost = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eu tincidunt tortor aliquam nulla facilisi. Malesuada pellentesque elit eget gravida cum. Eleifend donec pretium vulputate sapien nec. Sit amet consectetur adipiscing elit pellentesque habitant morbi. Varius duis at consectetur lorem donec massa sapien faucibus et. Nisl nisi scelerisque eu ultrices vitae auctor. A diam sollicitudin tempor id eu nisl nunc mi. Enim praesent elementum facilisis leo vel fringilla est ullamcorper. Habitasse platea dictumst vestibulum rhoncus est. Purus semper eget duis at tellus at urna. In est ante in nibh mauris cursus mattis. Fermentum odio eu feugiat pretium. Tortor aliquam nulla facilisi cras fermentum odio eu feugiat pretium. Massa massa ultricies mi quis hendrerit dolor magna eget est. Elit duis tristique sollicitudin nibh sit. Sed euismod nisi porta lorem mollis aliquam ut. Natoque penatibus et magnis dis. Mus mauris vitae ultricies leo integer malesuada nunc vel. Nunc scelerisque viverra mauris in aliquam. Ut enim blandit volutpat maecenas volutpat blandit aliquam. At elementum eu facilisis sed odio. Arcu cursus vitae congue mauris rhoncus aenean vel. Nisl rhoncus mattis rhoncus urna neque. Nunc congue nisi vitae suscipit tellus mauris a. Arcu odio ut sem nulla. Amet massa vitae tortor condimentum lacinia. Duis at tellus at urna condimentum mattis pellentesque id nibh. Lacus sed viverra tellus in. Vitae elementum curabitur vitae nunc. Nec sagittis aliquam malesuada bibendum arcu vitae elementum. Faucibus in ornare quam viverra orci sagittis eu. Mauris vitae ultricies leo integer malesuada.'
+
 const initialBlogs = [
   {
     title: 'React patterns',
     author: 'Michael Chan',
-    url: 'https://reactpatterns.com/',
+    blogPost: mockBlogPost,
     likes: 7
   },
   {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    blogPost: mockBlogPost,
     likes: 5
   }
 ]
@@ -21,30 +23,30 @@ const initialBlogs = [
 const newValidBlog = {
   title: 'Canonical string reduction',
   author: 'Edsger W. Dijkstra',
-  url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+  blogPost: mockBlogPost,
   likes: 12
 }
 
 const blogWithMissingLikes = {
   title: 'Canonical string reduction',
   author: 'Edsger W. Dijkstra',
-  url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
+  blogPost: mockBlogPost,
 }
 
 const blogWithMissingTitle = {
   author: 'Edsger W. Dijkstra',
-  url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+  blogPost: mockBlogPost,
   likes: 12
 }
 
-const blogWithMissingUrl = {
+const blogWithMissingBlogPost = {
   title: 'Canonical string reduction',
   author: 'Edsger W. Dijkstra',
   likes: 12
 }
 
 const nonExistingId = async () => {
-  const blog = new Blog({ title: 'Will remove this soon', url: 'http://www.will-remove-this-soon.com'})
+  const blog = new Blog({ title: 'Will remove this soon', blogPost: mockBlogPost })
   await blog.save()
   await blog.deleteOne()
 
@@ -57,7 +59,7 @@ const blogsInDb = async () => {
     return {
       title: blog.title,
       author: blog.author,
-      url: blog.url,
+      blogPost: blog.blogPost,
       likes: blog.likes,
       id: blog._id.toString(),
       creator: blog.creator._id.toString(),
@@ -128,7 +130,7 @@ module.exports = {
   newValidBlog,
   blogWithMissingLikes,
   blogWithMissingTitle,
-  blogWithMissingUrl,
+  blogWithMissingBlogPost,
   nonExistingId,
   blogsInDb,
   savedUser,

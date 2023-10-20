@@ -24,7 +24,7 @@ const blogSchema = new mongoose.Schema({
     required: true
   },
   author: String,
-  url: {
+  blogPost: {
     type: String,
     required: true
   },

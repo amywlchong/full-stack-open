@@ -1,5 +1,4 @@
 const blogsRouter = require('express').Router()
-const validator = require('validator')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const { userExtractor, checkBlogExists } = require('../utils/middleware')
@@ -24,14 +23,10 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user
 
-  if (body.url && !validator.isURL(body.url)) {
-    return response.status(400).json({ error: 'Invalid URL' })
-  }
-
   const blog = new Blog({
     title: body.title,
     author: body.author,
-    url: body.url,
+    blogPost: body.blogPost,
     creator: user.id,
     likes: body.likes || 0,
     likedBy: [],
@@ -67,12 +62,12 @@ blogsRouter.delete('/:id', userExtractor, checkBlogExists, async (request, respo
 
 blogsRouter.put('/:id', userExtractor, checkBlogExists, async (request, response) => {
 
-  const { title, author, url, likes } = request.body
+  const { title, author, blogPost, likes } = request.body
   const blog = request.blog
 
   blog.title = title
   blog.author = author
-  blog.url = url
+  blog.blogPost = blogPost
   blog.likes = likes
   blog.likedBy = blog.likedBy.concat(request.user.id)
 
