@@ -1,12 +1,16 @@
 ## Available Scripts
 
-In the project directory, you can run the following scripts.\
-For `npm start` and `npm run dev`, open [http://localhost:3003/api/blogs](http://localhost:3003/api/blogs) to view the state of the server in your browser.\
-The port number (3003) could be different if you've set the PORT environment variable to something else.
+In the project directory, you can run:
+
+### `npm install`
+
+Install the project dependencies.
 
 ### `npm start`
 
-Starts the Node.js server in production mode using the 'index.js' entry point.
+Starts the Node.js server in production mode using the 'index.js' entry point.\
+For `npm start` and `npm run dev`, open [http://localhost:3003/api/blogs](http://localhost:3003/api/blogs) to view the state of the server in your browser.\
+The port number (3003) could be different if you've set the PORT environment variable to something else.
 
 ### `npm run dev`
 

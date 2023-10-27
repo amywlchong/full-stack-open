@@ -4,6 +4,10 @@ This repository houses my projects and solutions to the exercises for the Full S
 
 [Course completion certificate](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/84a03b3172c4a49b09846e6c7c0a33a8)
 
+## [Final Blog App](https://github.com/amywlchong/full-stack-open/tree/master/final-blog-app)
+
+https://blogging.fly.dev/
+
 ## [Part 1 - Introduction to React](https://github.com/amywlchong/full-stack-open/tree/master/part1-intro-to-react)
 
 Topics: (a) Introduction to React, (b) JavaScript, (c) Component state, event handlers, (d) A more complex state, debugging React apps
