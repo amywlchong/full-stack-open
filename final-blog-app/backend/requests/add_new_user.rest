@@ -1,0 +1,28 @@
+POST http://localhost:3003/api/users/ HTTP/1.1
+content-type: application/json
+
+{
+  "username": "root",
+  "name": "Rachel S",
+  "password": "manysecrets"
+}
+
+###
+POST http://localhost:3003/api/users/ HTTP/1.1
+content-type: application/json
+
+{
+  "username": "myusername",
+  "name": "Emily L",
+  "password": "mysecrets"
+}
+
+###
+POST http://localhost:3003/api/users/ HTTP/1.1
+content-type: application/json
+
+{
+  "username": "newuser",
+  "name": "Robert A",
+  "password": "newsecrets"
+}
