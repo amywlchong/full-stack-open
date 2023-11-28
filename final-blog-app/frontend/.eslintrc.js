@@ -1,48 +1,37 @@
 /* eslint-env node */
 module.exports = {
-  "env": {
-      "browser": true,
-      "es6": true,
-      "jest/globals": true
+  env: {
+    browser: true,
+    es6: true,
+    "jest/globals": true,
   },
-  "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended"
-  ],
-  "parserOptions": {
-      "ecmaFeatures": {
-          "jsx": true
-      },
-      "ecmaVersion": 2020,
-      "sourceType": "module"
+  extends: ["eslint:recommended", "plugin:react/recommended"],
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 2020,
+    sourceType: "module",
   },
-  "plugins": [
-    "react", "jest"
-  ],
-  "rules": {
-      "indent": [
-          "error",
-          2
-      ],
-      "linebreak-style": [
-          "error",
-          "unix"
-      ],
-      "quotes": [
-          "error",
-          "single"
-      ],
-      "semi": [
-          "error",
-          "never"
-      ],
-      "no-console": 0,
-      "react/prop-types": 0,
-      "react/react-in-jsx-scope": "off"
+  plugins: ["react", "jest"],
+  rules: {
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": "off",
+    // Disable style rules to let prettier own it
+    "object-curly-spacing": "off",
+    "comma-dangle": "off",
+    "max-len": "off",
+    indent: "off",
+    "no-mixed-operators": "off",
+    "no-console": "off",
+    "arrow-parens": "off",
+    "generator-star-spacing": "off",
+    "space-before-function-paren": "off",
+    "jsx-quotes": "off",
   },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  }
-}
+  settings: {
+    react: {
+      version: "detect",
+    },
+  },
+};

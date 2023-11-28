@@ -1,105 +1,105 @@
-import { Link } from 'react-router-dom'
-import { useContext, useState } from 'react'
-import useAuthentication from '../hooks/useAuthentication'
-import { UserContext } from '../contexts/UserContext'
-import { NotificationContext } from '../contexts/NotificationContext'
-import { AppBar, Toolbar, Button, Box, Drawer } from '@mui/material'
-import { useModal } from '../contexts/ModalContext'
-import logo from '../assets/images/blog-logo.png'
-import PeopleIcon from '@mui/icons-material/People'
-import MenuIcon from '@mui/icons-material/Menu'
-import useViewportBreakpoints from '../hooks/useViewportBreakpoints'
+import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import useAuthentication from "../hooks/useAuthentication";
+import { UserContext } from "../contexts/UserContext";
+import { NotificationContext } from "../contexts/NotificationContext";
+import { AppBar, Toolbar, Button, Box, Drawer } from "@mui/material";
+import { useModal } from "../contexts/ModalContext";
+import logo from "../assets/images/blog-logo.png";
+import PeopleIcon from "@mui/icons-material/People";
+import MenuIcon from "@mui/icons-material/Menu";
+import useViewportBreakpoints from "../hooks/useViewportBreakpoints";
 
 const Menu = () => {
-  const { handleLogout } = useAuthentication()
-  const [loggedInUser] = useContext(UserContext)
-  const [, showNotification] = useContext(NotificationContext)
-  const { openLoginModal, openBlogModal } = useModal()
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const { isBelow850px } = useViewportBreakpoints()
+  const { handleLogout } = useAuthentication();
+  const [loggedInUser] = useContext(UserContext);
+  const [, showNotification] = useContext(NotificationContext);
+  const { openLoginModal, openBlogModal } = useModal();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { isBelow850px } = useViewportBreakpoints();
 
   const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen)
-  }
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   const toolbarStyles = {
-    display: 'grid',
+    display: "grid",
     gridTemplateColumns: {
-      xs: '2% 58% 38% 2%',
-      sm: '2% 48% 48% 2%',
-      lg: '4% 46% 46% 4%',
-      xl: '10% 40% 40% 10%',
+      xs: "2% 58% 38% 2%",
+      sm: "2% 48% 48% 2%",
+      lg: "4% 46% 46% 4%",
+      xl: "10% 40% 40% 10%",
     },
-  }
+  };
 
   const leftBoxStyles = {
-    gridColumn: '2/3',
-    display: 'flex',
-    justifyContent: 'start',
-  }
+    gridColumn: "2/3",
+    display: "flex",
+    justifyContent: "start",
+  };
 
   const rightBoxStyles = {
-    gridColumn: '3/4',
-    display: 'flex',
-    justifyContent: 'end',
-    alignItems: 'center',
-  }
+    gridColumn: "3/4",
+    display: "flex",
+    justifyContent: "end",
+    alignItems: "center",
+  };
 
   const navBarButtonStyles = {
-    backgroundColor: '#427ef8',
-    textTransform: 'capitalize',
-    fontWeight: '600',
-  }
+    backgroundColor: "#427ef8",
+    textTransform: "capitalize",
+    fontWeight: "600",
+  };
 
   const drawerButtonStyles = {
-    fontSize: '20px',
-    color: 'black',
-    '&:hover': {
-      color: '#427ef8',
-    }
-  }
+    fontSize: "20px",
+    color: "black",
+    "&:hover": {
+      color: "#427ef8",
+    },
+  };
 
   const handleLogoutClick = () => {
     try {
-      handleLogout()
-      setIsDrawerOpen(false)
-      showNotification('You have been successfully logged out.', 'success')
+      handleLogout();
+      setIsDrawerOpen(false);
+      showNotification("You have been successfully logged out.", "success");
     } catch (error) {
-      setIsDrawerOpen(false)
+      setIsDrawerOpen(false);
       showNotification(
-        'Error: There was a problem logging you out. Please try again.',
-        'error'
-      )
+        "Error: There was a problem logging you out. Please try again.",
+        "error"
+      );
     }
-  }
+  };
 
   return (
     <AppBar
-      position='static'
+      position="static"
       sx={{
-        backgroundColor: '#FFFFFF',
-        boxShadow: 'none',
-        height: '100px',
+        backgroundColor: "#FFFFFF",
+        boxShadow: "none",
+        height: "100px",
       }}
     >
       <Toolbar sx={toolbarStyles}>
         <Box sx={leftBoxStyles}>
           <Button
             component={Link}
-            sx={{ color: '#000', fontWeight: '600' }}
-            to='/'
+            sx={{ color: "#000", fontWeight: "600" }}
+            to="/"
           >
-            <img src={logo} alt="logo" style={{ maxHeight: '80px', maxWidth: '100%', width: 'auto' }} />
+            <img
+              src={logo}
+              alt="logo"
+              style={{ maxHeight: "80px", maxWidth: "100%", width: "auto" }}
+            />
           </Button>
         </Box>
 
         {isBelow850px && (
           <Box sx={rightBoxStyles}>
-            <Button
-              variant='contained'
-              size='large'
-              onClick={toggleDrawer}
-            >
+            <Button variant="contained" size="large" onClick={toggleDrawer}>
               <MenuIcon />
             </Button>
           </Box>
@@ -110,35 +110,35 @@ const Menu = () => {
             {loggedInUser && (
               <>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   sx={{
                     ...navBarButtonStyles,
-                    marginRight: '15px',
+                    marginRight: "15px",
                   }}
-                  size='medium'
+                  size="medium"
                   onClick={() => {
-                    openBlogModal()
+                    openBlogModal();
                   }}
                 >
                   Add New Blog
                 </Button>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   sx={{
                     ...navBarButtonStyles,
-                    marginRight: '15px',
+                    marginRight: "15px",
                   }}
-                  size='medium'
+                  size="medium"
                   component={Link}
-                  to='/users'
+                  to="/users"
                 >
-                  <PeopleIcon sx={{ marginRight: '10px' }} />
+                  <PeopleIcon sx={{ marginRight: "10px" }} />
                   Users
                 </Button>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   sx={navBarButtonStyles}
-                  size='medium'
+                  size="medium"
                   onClick={handleLogoutClick}
                 >
                   Log Out
@@ -148,9 +148,9 @@ const Menu = () => {
 
             {!loggedInUser && (
               <Button
-                variant='contained'
+                variant="contained"
                 sx={navBarButtonStyles}
-                size='large'
+                size="large"
                 onClick={openLoginModal}
               >
                 Log In
@@ -160,21 +160,24 @@ const Menu = () => {
         )}
       </Toolbar>
 
-      <Drawer
-        anchor='right'
-        open={isDrawerOpen}
-        onClose={toggleDrawer}
-      >
-        <Box sx={{ width: 200, p: 2, display: 'flex', flexDirection: 'column' }}>
-          <Button onClick={toggleDrawer} component={Link} to='/' sx={drawerButtonStyles}>
+      <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer}>
+        <Box
+          sx={{ width: 200, p: 2, display: "flex", flexDirection: "column" }}
+        >
+          <Button
+            onClick={toggleDrawer}
+            component={Link}
+            to="/"
+            sx={drawerButtonStyles}
+          >
             Home
           </Button>
           {loggedInUser && (
             <>
               <Button
                 onClick={() => {
-                  openBlogModal()
-                  toggleDrawer()
+                  openBlogModal();
+                  toggleDrawer();
                 }}
                 sx={drawerButtonStyles}
               >
@@ -191,8 +194,8 @@ const Menu = () => {
               </Button>
               <Button
                 onClick={() => {
-                  handleLogoutClick()
-                  toggleDrawer()
+                  handleLogoutClick();
+                  toggleDrawer();
                 }}
                 sx={drawerButtonStyles}
               >
@@ -203,8 +206,8 @@ const Menu = () => {
           {!loggedInUser && (
             <Button
               onClick={() => {
-                openLoginModal()
-                toggleDrawer()
+                openLoginModal();
+                toggleDrawer();
               }}
               sx={drawerButtonStyles}
             >
@@ -214,7 +217,7 @@ const Menu = () => {
         </Box>
       </Drawer>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Menu
+export default Menu;

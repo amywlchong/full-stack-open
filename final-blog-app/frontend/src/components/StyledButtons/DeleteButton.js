@@ -1,23 +1,22 @@
-import PropTypes from 'prop-types'
-import { Button } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { buttonStyle } from '../../styles/styles'
+import PropTypes from "prop-types";
+import { Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { buttonStyle } from "../../styles/styles";
 
 const DeleteButton = ({ handleDeleteClick }) => {
-
   const deleteButtonStyle = {
     ...buttonStyle,
-    color: '#FF0000',
+    color: "#FF0000",
     fontWeight: 500,
-  }
+  };
 
   const iconStyle = {
-    color: 'red',
-  }
+    color: "red",
+  };
 
   return (
     <Button
-      variant='contained'
+      variant="contained"
       color="warning"
       style={deleteButtonStyle}
       onClick={handleDeleteClick}
@@ -25,11 +24,11 @@ const DeleteButton = ({ handleDeleteClick }) => {
     >
       Delete
     </Button>
-  )
-}
+  );
+};
 
 DeleteButton.propTypes = {
   handleDeleteClick: PropTypes.func.isRequired,
-}
+};
 
-export default DeleteButton
+export default DeleteButton;

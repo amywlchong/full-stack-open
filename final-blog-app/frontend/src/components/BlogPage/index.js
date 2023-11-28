@@ -1,27 +1,27 @@
-import { useContext, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import useBlogs from '../../hooks/useBlogs'
-import Loading from '../FetchStateUI/Loading'
-import Error from '../FetchStateUI/Error'
-import { UserContext } from '../../contexts/UserContext'
-import { NotificationContext } from '../../contexts/NotificationContext'
-import LikeButton from '../StyledButtons/LikeButton'
-import DeleteButton from '../StyledButtons/DeleteButton'
-import CommentButton from '../StyledButtons/CommentButton'
-import CommentForm from './CommentForm'
+import { useContext, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import useBlogs from "../../hooks/useBlogs";
+import Loading from "../FetchStateUI/Loading";
+import Error from "../FetchStateUI/Error";
+import { UserContext } from "../../contexts/UserContext";
+import { NotificationContext } from "../../contexts/NotificationContext";
+import LikeButton from "../StyledButtons/LikeButton";
+import DeleteButton from "../StyledButtons/DeleteButton";
+import CommentButton from "../StyledButtons/CommentButton";
+import CommentForm from "./CommentForm";
 
-import { Container, Grid, Typography } from '@mui/material'
+import { Container, Grid, Typography } from "@mui/material";
 
-import Comments from '../BlogPage/Comments'
+import Comments from "../BlogPage/Comments";
 
 const Blog = () => {
-  const [loggedInUser] = useContext(UserContext)
-  const [, showNotification] = useContext(NotificationContext)
+  const [loggedInUser] = useContext(UserContext);
+  const [, showNotification] = useContext(NotificationContext);
 
-  const [showCommentForm, setShowCommentForm] = useState(false)
-  const navigate = useNavigate()
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const navigate = useNavigate();
 
-  const { id } = useParams()
+  const { id } = useParams();
   const {
     oneBlog,
     isLoadingOneBlog,
@@ -29,55 +29,66 @@ const Blog = () => {
     updateBlog,
     deleteBlog,
     createComment,
-  } = useBlogs(id)
+  } = useBlogs(id);
 
   if (isLoadingOneBlog) {
-    return <Loading />
+    return <Loading />;
   }
 
   if (isOneBlogError) {
-    return <Error />
+    return <Error />;
   }
 
-  const blog = oneBlog
+  const blog = oneBlog;
 
   const isUserAllowedToLike = loggedInUser
     ? blog.likedBy.every((idOfLikedUser) => idOfLikedUser !== loggedInUser.id)
-    : false
+    : false;
 
   const incrementLikes = async () => {
-    await updateBlog(blog, true) // incrementLikes = true
-  }
+    await updateBlog(blog, true); // incrementLikes = true
+  };
 
   const handleDeleteClick = async () => {
     if (window.confirm(`Delete ${blog.title}?`)) {
       try {
-        await deleteBlog(blog.id)
-        showNotification(`Deleted ${blog.title}`, 'success')
-        navigate('/')
+        await deleteBlog(blog.id);
+        showNotification(`Deleted ${blog.title}`, "success");
+        navigate("/");
       } catch (error) {
-        showNotification('An error occurred while deleting the blog.', 'error')
+        showNotification("An error occurred while deleting the blog.", "error");
       }
     }
-  }
+  };
 
   return (
     <>
       <Container>
-        <section id='blog-list-container'>
+        <section id="blog-list-container">
           <Grid container spacing={4}>
             <Grid item xs={12} sm={12} md={12}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '45vh',
-              }}>
-                <img src={`/${blog.image}`} alt="blog post" style={{ maxHeight: '100%', maxWidth: '100%', width: 'auto', height: 'auto' }} />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "45vh",
+                }}
+              >
+                <img
+                  src={`/${blog.image}`}
+                  alt="blog post"
+                  style={{
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    width: "auto",
+                    height: "auto",
+                  }}
+                />
               </div>
 
-              <Typography variant='h2'>{blog.title}</Typography>
-              <Typography variant='body1' sx={{ whiteSpace: 'pre-line' }}>
+              <Typography variant="h2">{blog.title}</Typography>
+              <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
                 {blog.blogPost}
               </Typography>
             </Grid>
@@ -117,7 +128,7 @@ const Blog = () => {
         <Comments comments={blog.comments} />
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default Blog
+export default Blog;

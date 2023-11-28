@@ -1,34 +1,32 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState } from "react";
 
-const ModalContext = createContext()
+const ModalContext = createContext();
 
 export const useModal = () => {
-  return useContext(ModalContext)
-}
+  return useContext(ModalContext);
+};
 
 export const ModalProvider = ({ children }) => {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
-  const [isNewBlogModalOpen, setIsNewBlogModalOpen] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isNewBlogModalOpen, setIsNewBlogModalOpen] = useState(false);
   const value = {
     isLoginModalOpen,
     isNewBlogModalOpen,
     closeBlogModal: () => {
-      setIsNewBlogModalOpen(false)
+      setIsNewBlogModalOpen(false);
     },
     openBlogModal: () => {
-      setIsNewBlogModalOpen(true)
+      setIsNewBlogModalOpen(true);
     },
     closeLoginModal: () => {
-      setIsLoginModalOpen(false)
+      setIsLoginModalOpen(false);
     },
     openLoginModal: () => {
-      setIsLoginModalOpen(true)
+      setIsLoginModalOpen(true);
     },
-  }
+  };
 
   return (
-    <ModalContext.Provider value={value}>
-      {children}
-    </ModalContext.Provider>
-  )
-}
+    <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
+  );
+};

@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import { Typography, Divider, Box } from '@mui/material'
+import PropTypes from "prop-types";
+import { Typography, Divider, Box } from "@mui/material";
 
 const Comments = ({ comments }) => {
-  const commentContainerStyles = { margin: '20px 0' }
-  const dividerStyles = { margin: '10px 0', borderColor: 'lightgrey' }
+  const commentContainerStyles = { margin: "20px 0" };
+  const dividerStyles = { margin: "10px 0", borderColor: "lightgrey" };
 
   return (
     <Box sx={commentContainerStyles}>
@@ -11,12 +11,14 @@ const Comments = ({ comments }) => {
       {comments.map((comment) => (
         <div key={comment.id}>
           <Divider sx={dividerStyles} />
-          <Typography variant="body1">{comment.commenter.name}: {comment.comment}</Typography>
+          <Typography variant="body1">
+            {comment.commenter.name}: {comment.comment}
+          </Typography>
         </div>
       ))}
     </Box>
-  )
-}
+  );
+};
 
 Comments.propTypes = {
   comments: PropTypes.arrayOf(
@@ -26,8 +28,8 @@ Comments.propTypes = {
       commenter: PropTypes.shape({
         name: PropTypes.string.isRequired,
       }).isRequired,
-    }).isRequired,
+    }).isRequired
   ).isRequired,
-}
+};
 
-export default Comments
+export default Comments;
